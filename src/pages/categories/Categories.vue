@@ -34,7 +34,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
   data(){
     return {
-      produtos: ''
+      productId: ''
     }
   },
   methods:{
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+@import '../../scss/colors.scss';
   .categories{
     align-items: center;
     text-align: center;
@@ -71,7 +71,10 @@ export default {
       }
     }
     .categories{
-
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: $light;
     }
     .row{
       display: flex;
