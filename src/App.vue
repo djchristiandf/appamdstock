@@ -6,6 +6,9 @@
           <router-link to="/login">
             <button class="btn btn-primary btn-sm">Login</button>
           </router-link>
+          <router-link to="/login">
+            <button class="btn btn-secondary btn-sm">Logout</button>
+          </router-link>
           <router-link class="link ml-3 mt-2" to="#">
             <h6>Cadastro</h6>
           </router-link>

@@ -20,8 +20,16 @@ export const addProductsAction = ({ commit }, add) => {
 export const findProductById = ({ commit }, id) => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}`}
-    Axios.get('http://localhost:8090/products/'+ id, {headers}).then((resp) => {
-        commit(types.FIND_PRODUCTS, resp.data)
+    Axios.get('http://localhost:8090/products/'+ id, {headers}).then(
+        (resp) => {
+            const object = {
+                id: resp.data.id,
+                name: resp.data.name,
+                amount: resp.data.amount,
+                price: resp.data.price.toFixed(2),
+                category: resp.data.category,
+            }
+        commit(types.FIND_PRODUCTS, object)
     })
 }
 

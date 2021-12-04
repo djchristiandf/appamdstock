@@ -14,6 +14,8 @@
 
 <script>
 import Axios from "axios";
+import { mapActions } from "vuex";
+
 export default {
   data(){
     return {
@@ -22,13 +24,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', ['setUserLogin']),
     enviarDadosLogin(){
       const dados = {
         username:this.username,
         password:this.password
       }
       Axios.post('http://localhost:8090/login', dados).then(response => {
-        localStorage.setItem('token', response.data)
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', response.data.username);
+        this.setUserLogin();
         //console.log(response.data)
         this.$router.push('/')
       })

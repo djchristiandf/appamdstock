@@ -6,7 +6,7 @@
     </div>
     <div v-else-if="error">{{ message }}</div>
     <div class="form" v-for="prod in products" :key="prod.id">
-      <form>
+      
         <div class="row">
           <label for="name">Descrição</label>
           <input type="text" v-model="prod.name" class="ml-3" id="name">
@@ -16,37 +16,65 @@
           <input type="text" v-model="prod.amount" class="ml-3" id="amount">
         </div>
         <div class="row">
-          <label for="price">Preço</label>
-          <input type="text" v-model="prod.price" class="ml-3" id="price">
+          <label for="price">Preço</label> 
+          <input type="text" v-model.lazy="prod.price" v-money="money" class="ml-3" id="price">
         </div>
+        <div class="row mt-3">
+          <select id="categories" v-model="prod.category.id">
+            <option value="0">Categories</option>    
+            <option v-for="category in categories.categories"
+                    :key="category.id"
+                    v-bind:value="category.id">
+              {{ category.name}}
+            </option>        
+            <!-- <option value="1">Eletronics</option>
+            <option value="2">Domestic</option>
+            <option value="3">Automotive</option>
+            <option value="4">Industry</option>
+            <option value="5">Farm</option> -->
+          </select>
+        </div> 
         <button v-on:click="updatedProduct(prod)" class="btn btn-warning">Atualizar</button>
-      </form>
+      
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions} from 'vuex'
+import { mapState, mapActions} from 'vuex';
+import { VMoney } from 'v-money';
 export default {
+  directives: {money: VMoney},
   data(){
     return {
       id: this.$route.params.id,
       message: '',
       ok: false,
-      error: false
+      error: false,
+      money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      }
     }
   },
   computed: {
-    ...mapState(['products'])
+    ...mapState(['categories', 'products']),
+    
   },
   methods: {
+    ...mapActions('categories', ['getCategoriesAction']),
     ...mapActions('products', ['findProductById', 'updateProductsAction']),
     async updatedProduct(prod){
       const update = {
         id: prod.id,
         name: prod.name,
         amount: prod.amount,
-        price: prod.price
+        price: prod.price,
+        category: { id: prod.category.id}
       }
       try {
         await this.updateProductsAction(update)
@@ -59,17 +87,26 @@ export default {
     }
   },
   created() {
-    this.findProductById(this.$route.params.id)
+    this.findProductById(this.$route.params.id),
+    this.getCategoriesAction()
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .main {
-  form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: solid 1px gray;
+    border-radius: 7%;
+    width: 35%;
+    padding: 1%;
     .row {
       padding: 1.4%;
       display: flex;

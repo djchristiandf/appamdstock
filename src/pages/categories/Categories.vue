@@ -4,12 +4,19 @@
         <h1>Categories</h1>
         <div class="list" v-for="category in categories.categories" :key="category.id">
           <div class="categories">
-          <div calss="dados">{{ category.id}}</div>
-          <div calss="dados">{{ category.name}}</div>
+          <div class="dados">{{ category.id}}</div>
+          <div class="dados">
+            <button class="btn" v-on:click="especificCategoryId(category.id)">
+            {{ category.name}}
+            </button>
+          </div>
           </div>
           <div class="row" v-for="prod in products.products" :key="prod.id">
-
-            {{ prod.name }}
+            <div v-if="prod.category" class="produtos">
+              <ul v-if="prod.category.id == productcatId  && category.id == productcatId">
+                <li>{{ prod.name }}</li>
+              </ul>
+            </div>                
           </div>
         </div>
       </div>
@@ -17,7 +24,7 @@
           Total: {{ count }}
           <button v-on:click="increments">+</button>
       </div>-->
-      <hr>
+      
 
 <!--      <div class="products">
         {{ products }}
@@ -34,7 +41,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
   data(){
     return {
-      productId: ''
+      productcatId: '',
     }
   },
   methods:{
@@ -43,15 +50,20 @@ export default {
         this.categories = resp.data   
       })
     },*/
-
+    
     ...mapActions('categories', ['getCategoriesAction']),
-    ...mapActions('products', ['getProductsAction'])
+    ...mapActions('products', ['getProductsAction']),
+    
+    especificCategoryId(id){
+      id != this.productcatId ? (this.productcatId = id) : (this.productcatId = '');
+      //console.log(id);
+    },    
   },
   created(){
     this.getCategoriesAction(), this.getProductsAction()
   },
   computed:{
-    ...mapState(['categories', 'products'])
+    ...mapState(['categories', 'products']),
   }
 }
 </script>
@@ -62,10 +74,14 @@ export default {
     align-items: center;
     text-align: center;
     .list{
+      width: 50%;
+      margin-left: 22.5%;
       align-items: center;
       padding: 1%;
       display:flex;
+      flex-direction: column;
       justify-content: center;
+      border: 1px solid gray;
       .dados{
         padding: 0.7%; 
       }
@@ -80,6 +96,16 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
+      .produtos{
+        width: 100%;
+        ul {
+          width: 100%;
+          display: flex;
+          list-style: none;
+          border-bottom: solid 1px gray;
+        }
+      }      
     }
   }
 
@@ -89,8 +115,11 @@ export default {
     font-size: 30px;
     font-weight: 900;
     align-items: center;
+    button {
+      font-size: 32px;
+    }
   }
-  .products{
+  .produtos{
     display: flex;
     flex-direction: column;
     align-items: center;

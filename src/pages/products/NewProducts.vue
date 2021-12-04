@@ -17,14 +17,17 @@
         </div>
         <div class="row mt-3">
           <select id="categories" v-model="form.category">
-            <option value="0">Category</option>
-            <option value="1">Eletronics</option>
+            <option value="0">Categories</option>    
+            <option v-for="category in categories.categories" :key="category.id" v-bind:value="category.id">
+              {{ category.name}}
+            </option>        
+            <!-- <option value="1">Eletronics</option>
             <option value="2">Domestic</option>
             <option value="3">Automotive</option>
             <option value="4">Industry</option>
-            <option value="5">Farm</option>
+            <option value="5">Farm</option> -->
           </select>
-        </div>
+        </div>        
         <button v-on:click="addProduct" class="btn btn-primary">Salvar</button>
       </form>
     </div>
@@ -33,7 +36,7 @@
 </template>
 
 <script>
-import { mapActions} from "vuex";
+import { mapState, mapActions} from "vuex";
 import { VMoney } from 'v-money';
 export default {
   directives: {money: VMoney},
@@ -56,6 +59,7 @@ export default {
     }
   },
   methods:{
+    ...mapActions('categories', ['getCategoriesAction']),
     ...mapActions('products', ['addProductsAction']),
     addProduct(add){
       this.price = this.price.replace(/\./g, "");
@@ -73,6 +77,12 @@ export default {
       this.form.amount = ''
       this.price = ''
     }
+  },
+  created(){
+    this.getCategoriesAction()
+  },
+  computed:{
+    ...mapState(['categories']),
   }
 }
 </script>
